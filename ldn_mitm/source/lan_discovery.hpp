@@ -143,7 +143,7 @@ namespace ams::mitm::ldn {
             os::ThreadType workerThread;
             CommState state;
             void worker();
-            int loopPoll();
+            virtual int loopPoll();
             void onSyncNetwork(NetworkInfo *info);
             void onConnect(int new_fd);
             void onDisconnectFromHost();
@@ -156,15 +156,15 @@ namespace ams::mitm::ldn {
             LanEventFunc lanEvent;
             std::unique_ptr<u8[]> stack;
         public:
-            Result initialize(LanEventFunc lanEvent = EmptyFunc, bool listening = true);
-            Result finalize();
+            virtual Result initialize(LanEventFunc lanEvent = EmptyFunc, bool listening = true);
+            virtual Result finalize();
             Result initNetworkInfo();
-            Result scan(NetworkInfo *networkInfo, u16 *count, ScanFilter filter);
+            virtual Result scan(NetworkInfo *networkInfo, u16 *count, ScanFilter filter);
             Result setAdvertiseData(const u8 *data, uint16_t size);
-            Result createNetwork(const SecurityConfig *securityConfig, const UserConfig *userConfig, const NetworkConfig *networkConfig);
+            virtual Result createNetwork(const SecurityConfig *securityConfig, const UserConfig *userConfig, const NetworkConfig *networkConfig);
             Result destroyNetwork();
-            Result connect(const NetworkInfo *networkInfo, UserConfig *userConfig, u16 localCommunicationVersion);
-            Result disconnect();
+            virtual Result connect(const NetworkInfo *networkInfo, UserConfig *userConfig, u16 localCommunicationVersion);
+            virtual Result disconnect();
             Result getNetworkInfo(NetworkInfo *pOutNetwork);
             Result getNetworkInfo(NetworkInfo *pOutNetwork, NodeLatestUpdate *pOutUpdates, int bufferCount);
             Result openAccessPoint();
@@ -183,7 +183,7 @@ namespace ams::mitm::ldn {
                 this->stack = std::make_unique<u8[]>(os::ThreadStackAlignment + StackSize);
                 LogFormat("LANDiscovery");
             };
-            ~LANDiscovery();
+            virtual ~LANDiscovery();
             u16 getListenPort() const {
                 return this->listenPort;
             }

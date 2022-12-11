@@ -57,6 +57,28 @@ public:
     }
 };
 
+class WANToggleListItem : public tsl::elm::ToggleListItem {
+public:
+  WANToggleListItem() : ToggleListItem("WAN", false) {
+    u32 enabled;
+    Result rc;
+
+    rc = ldnMitmGetWANEnabled(&g_ldnConfig, &enabled);
+    if (R_FAILED(rc)) {
+      g_state = State::Error;
+    }
+
+    this->setState(enabled);
+
+    this->setStateChangedListener([](bool enabled) {
+      Result rc = ldnMitmSetWANEnabled(&g_ldnConfig, enabled);
+      if (R_FAILED(rc)) {
+        g_state = State::Error;
+      }
+    });
+  }
+};
+
 class MainGui : public tsl::Gui {
 public:
     MainGui() { }
@@ -72,6 +94,7 @@ public:
             list->addItem(new tsl::elm::ListItem("wrong state"));
         } else {
             list->addItem(new EnabledToggleListItem());
+            list->addItem(new WANToggleListItem());
             list->addItem(new LoggingToggleListItem());
         }
 

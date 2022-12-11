@@ -19,6 +19,7 @@
 #include <stratosphere.hpp>
 #include "debug.hpp"
 #include "lan_discovery.hpp"
+#include "wan_discovery.hpp"
 #include "ldn_types.hpp"
 #include "ipinfo.hpp"
 #include "interfaces/icommunication.hpp"
@@ -26,7 +27,7 @@
 namespace ams::mitm::ldn {
     class ICommunicationService {
         private:
-            LANDiscovery lanDiscovery;
+            LANDiscovery *lanDiscovery = nullptr;
             os::SystemEvent *state_event;
             u64 error_state;
         public:
@@ -37,6 +38,10 @@ namespace ams::mitm::ldn {
             
             ~ICommunicationService() {
                 LogFormat("~ICommunicationService");
+                if (this->lanDiscovery != nullptr) {
+                  delete lanDiscovery;
+                  this->lanDiscovery = nullptr;
+                }
                 if (this->state_event != nullptr) {
                     delete this->state_event;
                     this->state_event = nullptr;

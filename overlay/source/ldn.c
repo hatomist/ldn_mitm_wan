@@ -33,6 +33,14 @@ Result ldnMitmSetEnabled(LdnMitmConfigService *s, u32 enabled) {
     return serviceDispatchIn(&s->s, 65005, enabled);
 }
 
+Result ldnMitmGetWANEnabled(LdnMitmConfigService *s, u32 *enabled) {
+    return serviceDispatchOut(&s->s, 65101, *enabled);
+}
+
+Result ldnMitmSetWANEnabled(LdnMitmConfigService *s, u32 enabled) {
+    return serviceDispatchIn(&s->s, 65102, enabled);
+}
+
 Result ldnMitmGetVersion(LdnMitmConfigService *s, char *version) {
     char version_s[32];
     Result rc = serviceDispatchOut(&s->s, 65001, version_s);
